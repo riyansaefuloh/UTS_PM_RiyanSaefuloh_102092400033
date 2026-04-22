@@ -5,12 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class PenggunaController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        // if (!Auth::check()) {
+        // return redirect('/login');
+        // }
+        if (Auth::user()->role == 'staff') {
+        // kalau staff → hanya dirinya sendiri
+            $users = User::where('id', Auth::id())->get();
+        } else {
+        // kalau admin → tampil semua
+            $users = User::all();
+        }
         return view('pengguna.index', compact('users'));
     }
 
@@ -24,7 +34,7 @@ class PenggunaController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:4',
+            'password' => 'required|min:4|max:10',
             'role' => 'required|in:owner,staff',
         ]);
 
@@ -35,7 +45,7 @@ class PenggunaController extends Controller
         $user->role = $request->role;
         $user->save();
 
-        return redirect()->route('pengguna.index')
+        return redirect()->route('login')
             ->with('success', 'Pengguna berhasil ditambahkan');
     }
 
@@ -73,7 +83,7 @@ class PenggunaController extends Controller
     {
         User::findOrFail($id)->delete();
 
-        return redirect()->route('pengguna.index')
+        return redirect()->route('login')
             ->with('success', 'Pengguna berhasil dihapus');
     }
 }

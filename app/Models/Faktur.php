@@ -17,6 +17,7 @@ class Faktur extends Model
         'tagihan',
         'tanggal_faktur',
         'tanggal_jatuh_tempo',
+        'status_pembayaran',
     ];
 
     
@@ -32,6 +33,12 @@ class Faktur extends Model
         $jatuhTempo = Carbon::parse($this->tanggal_jatuh_tempo);
 
         $sisaHari = $hariIni->diffInDays($jatuhTempo, false);
+
+
+        // Jika sudah lunas, tampilkan status lunas saja
+        if ($this->status_pembayaran == 'Lunas') {
+            return 'Lunas';
+        }
 
         if ($sisaHari <= 3) {
             return 'Darurat';

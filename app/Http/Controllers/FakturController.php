@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use App\Models\Faktur;
 use App\Models\Distributor;
 use Illuminate\Http\Request;
+use Midtrans\Snap;
+use Midtrans\Config;
+use Illuminate\Support\Facades\Log;
 
 class FakturController extends Controller
 {
@@ -60,9 +63,9 @@ class FakturController extends Controller
     {
         $request->validate([
             'distributor_id' => 'required',
-            'tagihan' => 'required|numeric',
-            'tanggal_faktur' => 'required|date',
-            'tanggal_jatuh_tempo' => 'required|date',
+            'tagihan' => 'required|numeric|gt:0',
+            'tanggal_faktur' => 'required|date|after_or_equal:today',
+            'tanggal_jatuh_tempo' => 'required|date|after:tanggal_faktur',
         ]);
 
         Faktur::create([
@@ -89,11 +92,13 @@ class FakturController extends Controller
     public function update(Request $request, Faktur $faktur)
     {
         $request->validate([
-            'distributor_id' => 'required',
-            'tagihan' => 'required|numeric',
-            'tanggal_faktur' => 'required|date',
-            'tanggal_jatuh_tempo' => 'required|date',
-        ]);
+    'distributor_id' => 'required',
+    'tagihan' => 'required|numeric|gt:0',
+    'tanggal_faktur' => 'required|date',
+    'tanggal_jatuh_tempo' => 'required|date',
+], [
+    'tagihan.gt' => 'Tagihan tidak boleh 0 atau kurang.',
+]);
 
         $faktur = Faktur::findOrFail($faktur->id);
         $faktur->update($request->all());
@@ -117,4 +122,78 @@ class FakturController extends Controller
         $faktur = Faktur::with('distributor')->findOrFail($id);
         return view('faktur.showFaktur', compact('faktur'));
     }
+
+    
+
+
+
+
+public function payment($id)
+{
+    $faktur = Faktur::with('distributor')->findOrFail($id);
+
+    // SETUP MIDTRANS
+    Config::$serverKey = config('midtrans.server_key');
+    Config::$isProduction = config('midtrans.is_production');
+    Config::$isSanitized = true;
+    Config::$is3ds = true;
+
+    $params = [
+        'transaction_details' => [
+            'order_id' => 'FAKTUR-' . $faktur->id . '-' . time(), // biar unik
+            'gross_amount' => (int) $faktur->tagihan,
+        ],
+        'customer_details' => [
+            'first_name' => $faktur->distributor->nama_distributor,
+            'phone' => '08123456789', // sementara
+        ],
+    ];
+
+    $snapToken = Snap::getSnapToken($params);
+
+    return view('faktur.payment', compact('snapToken', 'faktur'));
+}
+
+
+
+
+
+
+
+
+
+public function callback(Request $request)
+{
+    Log::info('MIDTRANS CALLBACK MASUK', $request->all());
+
+    if (str_contains($request->order_id, 'payment_notif_test')) {
+        return response()->json(['message' => 'Test Success'], 200);
+    }
+
+    $orderId = $request->order_id;
+    $status = $request->transaction_status;
+
+    $explode = explode('-', $orderId);
+    $fakturId = $explode[1]; 
+
+    $faktur = Faktur::find($fakturId);
+
+    if (!$faktur) {
+        return response()->json(['message' => 'Faktur tidak ditemukan'], 404);
+    }
+
+    // --- PERUBAHAN DI SINI ---
+    if ($status == 'settlement' || $status == 'capture') {
+        // Gunakan nama kolom sesuai database: status_pembayaran
+        $faktur->update(['status_pembayaran' => 'Lunas']); 
+    } elseif ($status == 'pending') {
+        $faktur->update(['status_pembayaran' => 'Menunggu Pembayaran']);
+    } elseif (in_array($status, ['deny', 'expire', 'cancel'])) {
+        $faktur->update(['status_pembayaran' => 'Gagal']);
+    }
+    $faktur->save();
+
+    return response()->json(['message' => 'Success']);
+    
+}
 }

@@ -63,7 +63,7 @@
 
                 {{-- HEADER TABEL --}}
 
-                <thead>
+                <thead class="bg-blue-50 text-gray-700">
                     <tr class="border-b text-left text-gray-500">
                         <th class="py-3">ID Obat</th>
                         <th>Nama Obat</th>

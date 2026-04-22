@@ -48,9 +48,10 @@
                     Tanggal Faktur <span class="text-red-500">*</span>
                 </label>
                 <input type="date"
-                name="tanggal_faktur"
-                value="{{ old('tanggal_faktur') }}"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+       name="tanggal_faktur"
+       min="{{ date('Y-m-d') }}"
+       value="{{ old('tanggal_faktur') }}"
+       class="w-full border border-gray-300 rounded-lg px-3 py-2">
                 @error('tanggal_faktur')
                 <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                 @enderror
@@ -67,12 +68,15 @@
                     </span>
                     <input type="number"
                            name="tagihan"
+                           min="1"
                            value="{{ old('tagihan') }}"
                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
-                           placeholder="Rp">
+                           placeholder="Rp"
+                           oninvalid="this.setCustomValidity('Tagihan tidak boleh 0')"
+                           oninput="this.setCustomValidity('')">
                 </div>
                 @error('tagihan')
-                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    <p class="text-xs text-red-500 mt-1">{{ $message  }}</p>
                 @enderror
             </div>
 
@@ -82,9 +86,10 @@
                     Tanggal Jatuh Tempo <span class="text-red-500">*</span>
                 </label>
                 <input type="date"
-                       name="tanggal_jatuh_tempo"
-                       value="{{ old('tanggal_jatuh_tempo') }}"
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+       name="tanggal_jatuh_tempo"
+       min="{{ date('Y-m-d') }}"
+       value="{{ old('tanggal_jatuh_tempo') }}"
+       class="w-full border border-gray-300 rounded-lg px-3 py-2">
                 @error('tanggal_jatuh_tempo')
                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                 @enderror

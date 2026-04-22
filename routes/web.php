@@ -6,6 +6,7 @@ use App\Http\Controllers\ObatController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\FakturController;
 use App\Http\Controllers\DistributorController;
+use App\Http\Controllers\MidtransController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,9 +25,9 @@ use App\Http\Controllers\DistributorController;
     //     return view('welcome');
     // });
     
-    Route::get('/', function(){
-        return redirect()->route('login');
-    });
+    Route::get('/', function () {return view('landing');
+        })->name('landing');
+    
     
     Route::get('/login', function(){
         return view('login');
@@ -35,6 +36,8 @@ use App\Http\Controllers\DistributorController;
     Route::post('/proseslogin', [AuthController::class, 'proseslogin']);
     
     Route::middleware('auth')->group(function () {
+        // Route::resource('pengguna', PenggunaController::class);
+
 
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -90,3 +93,10 @@ Route::prefix('distributors')->group(function () {
     Route::put('/{distributor}', [DistributorController::class, 'update'])->name('distributors.update');
     Route::delete('/{distributor}', [DistributorController::class, 'destroy'])->name('distributors.destroy');
 });
+
+
+
+Route::post('/midtrans/create-transaction', [MidtransController::class, 'create']);
+Route::get('/test-midtrans', function () {dd(config('midtrans.server_key'));});
+Route::get('/faktur/payment/{id}', [FakturController::class, 'payment'])->name('faktur.payment');
+Route::post('/midtrans/callback', [FakturController::class, 'callback']);

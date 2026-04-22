@@ -239,9 +239,9 @@
        TABEL DISTRIBUTOR
        ========================= --}}
   <table class="dist-table">
-    <thead>
+    <thead class="bg-blue-50 text-gray-700">
       <tr>
-        <th>Nama Distributor</th>
+        <th >Nama Distributor</th>
         <th>Kontak</th>
         <th>Alamat</th>
         <th class="aksi-col">Aksi</th>
@@ -258,17 +258,28 @@
           <div class="aksi-wrapper">
 
             {{-- Edit --}}
-            <a href="{{ route('distributors.edit', $d->id) }}" title="Edit">
+            <!-- <a href="{{ route('distributors.edit', $d->id) }}" title="Edit">
               <i class="fas fa-pen text-orange-500"></i>
-            </a>
+            </a> -->
+
+            <a href="{{ route('distributors.edit', $d->id) }}" class="text-blue-600 hover:text-blue-800">
+                            <i class="far fa-pen-to-square"></i>
+                        </a>
 
             {{-- Hapus --}}
-            <button type="button"
+            <!-- <button type="button"
                     data-url="{{ route('distributors.destroy', $d->id) }}"
                     data-name="{{ $d->nama_distributor }}"
                     onclick="openDelete(this)">
               <i class="fas fa-trash text-gray-400"></i>
-            </button>
+            </button> -->
+
+            <form action="{{ route('distributors.destroy', $d->id) }}" method="POST">
+                            @csrf @method('DELETE')
+                            <button onclick="return confirm('Hapus obat ini?')" class="text-red-500">
+                                <i class="far fa-trash-can"></i>
+                            </button>
+            </form>
 
           </div>
         </td>

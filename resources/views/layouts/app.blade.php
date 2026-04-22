@@ -45,6 +45,7 @@
         {{-- MENU --}}
         <nav class="px-6 space-y-3 font-medium">
 
+    @auth   
             <a href="{{ url('/dashboard') }}"
                class="flex items-center p-4 rounded-xl transition
                {{ request()->is('dashboard') ? 'bg-navy text-white shadow-lg shadow-blue-200' : 'text-gray-400 hover:bg-blue-50' }}">
@@ -58,7 +59,7 @@
                 <i class="fas fa-pills w-10 text-xl"></i>
                 <span>Daftar Obat</span>
             </a>
-            
+    
         @if(auth()->user()->role === 'owner')
             <a href="{{ url('/faktur') }}"
                class="flex items-center p-4 rounded-xl transition
@@ -67,7 +68,7 @@
                 <span>Daftar Faktur</span>
             </a>
         @endif
-
+    
         @if(auth()->user()->role === 'owner')
             <a href="{{ url('/distributors') }}"
                class="flex items-center p-4 rounded-xl transition
@@ -76,16 +77,15 @@
                 <span>Distributor</span>
             </a>
         @endif
-
-        @if(auth()->user()->role === 'owner')
+    
             <a href="{{ url('/pengguna') }}"
                class="flex items-center p-4 rounded-xl transition
                {{ request()->is('pengguna*') ? 'bg-navy text-white shadow-lg shadow-blue-200' : 'text-gray-400 hover:bg-blue-50' }}">
                 <i class="fas fa-users w-10 text-xl"></i>
                 <span>Pengguna</span>
             </a>
-        @endif
-
+       
+    @endauth
             {{-- KELUAR --}}
             <a href="{{ url('/logout') }}"
                class="flex items-center p-4 rounded-xl transition text-red-500 hover:bg-red-50 font-semibold">
@@ -105,6 +105,7 @@
                 <div class="h-10 w-px bg-white/30"></div>
 
                 <div class="flex items-center gap-4">
+                @auth
                     <div class="user-info">
                         <span class="text-sm font-bold">
                             {{ Auth::user()->name }} ({{ Auth::user()->role }})
@@ -114,6 +115,7 @@
                             {{ Auth::user()->email }}
                         </span>
                     </div>
+                @endauth
                     <div class="w-11 h-11 rounded-full bg-white/20 border border-white/30 flex items-center justify-center">
                         <i class="far fa-user"></i>
                     </div>

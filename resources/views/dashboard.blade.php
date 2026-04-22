@@ -11,7 +11,7 @@
     </h3>
 
     <table class="w-full text-sm text-left">
-        <thead class="text-gray-500 border-b">
+        <thead class="bg-blue-50 text-gray-700">
             <tr>
                 <th class="px-4 py-3 text-center">Nama Obat</th>
                 <th class="px-4 py-3 text-center">Stok</th>
@@ -67,7 +67,7 @@
     </h3>
 
     <table class="w-full text-sm text-left">
-        <thead class="text-gray-500 border-b">
+        <thead class="bg-blue-50 text-gray-700">
             <tr>
                 <th class="px-4 py-3 text-center">Kode Faktur</th>
                 <th class="px-4 py-3 text-center">Nama Distributor</th>

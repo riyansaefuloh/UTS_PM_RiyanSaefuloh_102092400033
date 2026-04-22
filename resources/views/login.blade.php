@@ -144,7 +144,7 @@
 
                         @if (session('error'))
                             <div class="alert alert-danger">
-                                {{ session('error') }}
+                                {{ session('error') }}v  
                             </div>
                         @endif
 
@@ -162,6 +162,13 @@
 
                             <div class="form-button">
                                 <input type="submit" class="form-submit" value="Masuk" />
+                            </div>
+
+                            <div>
+                                 <a href="{{ route('pengguna.create') }}"
+                                        class="bg-navy text-white px-5 py-2 rounded-lg flex items-center gap-2">
+                                        <i class="fas fa-plus"></i>Register
+                                </a>
                             </div>
                         </form>
 

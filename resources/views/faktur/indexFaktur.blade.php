@@ -9,7 +9,7 @@
     <div class="flex items-center gap-4">
         {{-- TOMBOL TAMBAH --}}
         <a href="{{ route('faktur.create') }}"
-            class="bg-navy text-white rounded-lg shadow hover:opacity-90 transition flex justify-center items-center px-4 h-10 min-w-[150px]">
+           class="bg-navy text-white px-5 py-2 rounded-lg flex items-center gap-2">
             + Tambah Faktur
         </a>
 
@@ -62,6 +62,7 @@
                 <th class="p-3 text-left">Tanggal Faktur</th>
                 <th class="p-3 text-left">Tanggal Jatuh Tempo</th>
                 <th class="p-3 text-center w-32">Status</th>
+                <th class="p-3 text-center">Pembayaran</th>
                 <th class="p-3 text-center w-32">Aksi</th>
             </tr>
         </thead>
@@ -110,9 +111,47 @@
                     @endif
                 </td>
 
+
+
+
+
+
+                <td class="p-3 text-center">
+    @if($f->status_pembayaran == 'Lunas')
+        <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">
+            Lunas
+        </span>
+    @elseif($f->status_pembayaran == 'Menunggu Pembayaran')
+        <span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-xs">
+            Pending
+        </span>
+    @elseif($f->status_pembayaran == 'Gagal')
+        <span class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-xs">
+            Gagal
+        </span>
+    @else
+        <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs">
+            Belum Bayar
+        </span>
+    @endif
+</td>
+
+
+
+
+
+
+
+
+
                 {{-- AKSI --}}
                 <td class="p-3 text-center w-32">
                     <div class="flex justify-center gap-4">
+                        <a href="{{ route('faktur.payment', $f->id) }}"
+   class="text-green-600 hover:text-green-800 transition"
+   title="Bayar Faktur">
+    💳
+</a>
                         {{-- VIEW --}}
                         <a href="{{ route('faktur.show', $f->id) }}"
                         class="text-gray-500 hover:text-gray-700 transition"
